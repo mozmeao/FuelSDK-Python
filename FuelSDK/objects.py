@@ -271,7 +271,7 @@ class ET_DataExtension_Row(ET_CUDSupport):
         self.last_request_id = obj.request_id               
             
         return obj
-        
+
     def post(self):
         self.getCustomerKey()
         originalProps = self.props
@@ -302,13 +302,13 @@ class ET_DataExtension_Row(ET_CUDSupport):
 
             currentProp['CustomerKey'] = self.CustomerKey
             currentProp['Properties'] = {}
-            currentProp['Properties']['Property'] = currentFields   
+            currentProp['Properties']['Property'] = currentFields
 
-        obj = ET_Post(self.auth_stub, self.obj_type, currentProp)   
+        obj = ET_Post(self.auth_stub, self.obj_type, currentProp)
         self.props = originalProps
         return obj
-        
-    def patch(self): 
+
+    def patch(self, updateadd=False):
         self.getCustomerKey()
 
         if type(self.props) is list:
@@ -337,8 +337,17 @@ class ET_DataExtension_Row(ET_CUDSupport):
             currentProp['CustomerKey'] = self.CustomerKey
             currentProp['Properties'] = {}
             currentProp['Properties']['Property'] = currentFields
-            
-        obj = ET_Patch(self.auth_stub, self.obj_type, currentProp)
+
+        if updateadd:
+            opt = self.auth_stub.soap_client.factory.create('SaveOption')
+            opt.PropertyName = '*'
+            opt.SaveAction = 'UpdateAdd'
+            opts = self.auth_stub.soap_client.factory.create('Options')
+            opts.SaveOptions.SaveOption = [opt]
+        else:
+            opts = None
+
+        obj = ET_Patch(self.auth_stub, self.obj_type, currentProp, opts)
         return obj
     
     def delete(self): 
