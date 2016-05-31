@@ -233,10 +233,11 @@ class ET_Client(object):
         #If we don't already have a token or the token expires within 5 min(300 seconds), get one
         if (force_refresh or self.authToken is None or (self.authTokenExpiration is not None and time.time() + 300 > self.authTokenExpiration)):
             headers = {'content-type' : 'application/json', 'user-agent' : 'FuelSDK-Python-v1.2.0'}
-            if (self.authToken is None):
-                payload = {'clientId' : self.client_id, 'clientSecret' : self.client_secret, 'accessType': 'offline'}
-            else:
-                payload = {'clientId' : self.client_id, 'clientSecret' : self.client_secret, 'refreshToken' : self.refreshKey, 'accessType': 'offline'}
+            payload = {
+                'clientId': self.client_id,
+                'clientSecret': self.client_secret,
+                'accessType': 'offline',
+            }
             if self.refreshKey:
                 payload['refreshToken'] = self.refreshKey
 
